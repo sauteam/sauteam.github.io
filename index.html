@@ -1,204 +1,443 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="description" content="iOS applications crafted by sauteam for mobile users.">
+    <meta name="keywords" content="iOS, iPhone, apps, mobile, App Store">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sauteam</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <style>
         :root {
             --bg-color: #ffffff;
             --text-color: #1d1d1f;
-            --secondary-text: #86868b;
-            --card-bg: #f5f5f7;
+            --secondary-text: rgba(0, 0, 0, 0.45);
+            --border-color: #e0e0e0;
+            --link-accent: #007aff;
+            --icon-color: #1d1d1f;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1d1d1f;
+            --text-color: #f5f5f7;
+            --secondary-text: rgba(255, 255, 255, 0.45);
+            --border-color: #333;
+            --icon-color: #f5f5f7;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* 右上角语言切换 */
-        .lang-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 14px;
+        /* 右上角控制栏 - 主题切换 + 语言切换 */
+        .top-controls {
+            position: fixed;
+            top: 0.75rem;
+            right: 1rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
-        .lang-switch a {
-            text-decoration: none;
-            color: var(--secondary-text);
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
             cursor: pointer;
-            margin-left: 10px;
-            transition: color 0.2s;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1;
+            transition: background-color 0.2s, transform 0.2s;
         }
 
-        .lang-switch a.active {
+        .theme-toggle:hover {
+            background-color: rgba(128, 128, 128, 0.12);
+            transform: scale(1.05);
+        }
+
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.15rem;
+            padding: 0.15rem;
+            background: rgba(128, 128, 128, 0.08);
+            border-radius: 6px;
+        }
+
+        .lang-toggle button {
+            padding: 0.25rem 0.4rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--secondary-text);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .lang-toggle button:hover {
             color: var(--text-color);
-            font-weight: 600;
         }
 
-        .container {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 80px 20px;
+        .lang-toggle button.active {
+            background: var(--bg-color);
+            color: var(--text-color);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 引用样式 */
+        blockquote p::before {
+            content: "\201C";
+        }
+
+        blockquote p::after {
+            content: "\201D";
+        }
+
+        a,
+        a:visited {
+            color: inherit;
+        }
+
+        .tag-line {
+            padding: 1rem;
+            margin: 0;
             text-align: center;
         }
 
-        h1 {
-            font-size: 48px;
-            font-weight: 600;
-            letter-spacing: -0.003em;
-            margin-bottom: 60px;
+        .tag-line p {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
-        /* 严格参照 LibreMac 的 Grid 布局 */
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
+        /* 严格参照 LibreMac 的列表布局 */
+        .app-list {
+            display: flex;
+            flex-direction: column;
+            max-width: 640px;
+            margin: 0 auto;
+            padding-top: 2.5rem;
+            padding-bottom: 3rem;
         }
 
         .app-item {
-            background-color: var(--card-bg);
-            border-radius: 22px;
-            padding: 40px 20px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s cubic-bezier(0, 0, 0.5, 1);
             display: flex;
-            flex-direction: column;
             align-items: center;
+            padding: 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            text-decoration: none;
+            transition: background-color 0.2s ease;
         }
 
         .app-item:hover {
-            transform: scale(1.02);
-            background-color: #f0f0f2;
+            background-color: rgba(128, 128, 128, 0.06);
         }
 
         .app-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 22.5%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            /* 即使 App Store 图标未加载也能保持占位 */
-            background-color: #fff;
+            width: 64px;
+            height: 64px;
+            margin-right: 1rem;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-color);
+        }
+
+        .app-info {
+            flex: 1;
         }
 
         .app-title {
-            font-size: 21px;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0 0 0.2rem 0;
         }
 
         .app-description {
-            font-size: 14px;
-            color: var(--secondary-text);
+            font-size: 0.9rem;
+            opacity: 0.6;
+            margin: 0;
             line-height: 1.4;
-            max-width: 220px;
-            height: 40px;
-            margin-bottom: 20px;
         }
 
-        .app-store-badge {
-            height: 32px;
-        }
-
+        /* Footer - 底部左右分布 */
         footer {
-            margin-top: 100px;
-            padding-bottom: 40px;
-            font-size: 13px;
+            position: fixed;
+            bottom: 0.75rem;
+            left: 1rem;
+            right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--secondary-text);
+            z-index: 100;
+        }
+
+        .footer-left {
+            font-size: 12px;
             color: var(--secondary-text);
         }
 
-        footer a {
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .footer-right a {
             color: var(--secondary-text);
             text-decoration: none;
-            margin: 0 8px;
+            transition: color 0.2s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        .footer-right a:hover {
+            color: var(--text-color);
+            opacity: 0.8;
         }
 
-        .share-x {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 8px 16px;
-            background: #000;
-            color: #fff !important;
-            border-radius: 18px;
-            font-weight: 500;
+        .footer-right a svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
         }
 
-        @media (max-width: 734px) {
-            h1 { font-size: 32px; }
-            .container { padding-top: 60px; }
+        /* Retina 边框 */
+        @media (-webkit-min-device-pixel-ratio: 2) {
+            .app-item {
+                border-bottom-width: 0.5px;
+            }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 640px) {
+            .app-list {
+                padding-top: 3rem;
+            }
+
+            .tag-line p {
+                font-size: 0.9rem;
+            }
+
+            footer {
+                left: 0.75rem;
+                right: 0.75rem;
+                bottom: 0.5rem;
+            }
+
+            .footer-right {
+                gap: 0.4rem;
+            }
+
+            .footer-right a {
+                width: 22px;
+                height: 22px;
+            }
+
+            .footer-right a svg {
+                width: 12px;
+                height: 12px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <div class="lang-switch">
-        <a id="btn-en" class="active" onclick="switchLang('en')">EN</a>
-        <a id="btn-zh" onclick="switchLang('zh')">中</a>
+    <!-- 右上角控制栏 -->
+    <div class="top-controls">
+        <!-- 主题切换 (使用 SVG) -->
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+            <!-- 太阳图标 -->
+            <svg id="icon-sun" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <line x1="12" y1="20" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x1="1" y1="12" x2="4" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <line x1="20" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+            </svg>
+            <!-- 月亮图标 -->
+            <svg id="icon-moon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" style="display: none;">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+        </button>
+
+        <!-- 语言切换 -->
+        <div class="lang-toggle">
+            <button id="btn-zh" class="active" onclick="switchLang('zh')">中</button>
+            <button id="btn-en" onclick="switchLang('en')">EN</button>
+        </div>
     </div>
 
-    <div class="container">
-        <h1>sauteam</h1>
+    <div class="app-list">
+        <!-- 标语 -->
+        <blockquote class="tag-line">
+            <p data-en="iOS apps crafted by sauteam for mobile users." data-zh="由 sauteam 精心打造的 iOS 应用。">由 sauteam 精心打造的
+                iOS 应用。</p>
+        </blockquote>
 
-        <div class="apps-grid">
-            <a href="https://apps.apple.com/app/id6753095851" class="app-item" target="_blank">
-                <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/3d/8c/7e/3d8c7e4b-7001-f187-5421-4f187f54c935/AppIcon-0-0-1x_U007emarketing-0-10-0-85-220.png/256x256bb.png" class="app-icon" alt="RouteX">
-                <div class="app-title">RouteX</div>
-                <div class="app-description" 
-                     data-en="Automatically record position and light chasing moments." 
-                     data-zh="自动记录位置，捕捉每一个追光时刻。">
-                     Automatically record position and light chasing moments.
-                </div>
-                <img src="https://linkmaker.itunes.apple.com/assets/shared/images/web/download_appstore.svg" class="app-store-badge" alt="Download">
+        <!-- RouteX -->
+        <a class="app-item" href="https://apps.apple.com/app/id6753095851" target="_blank">
+            <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/34/8d/87/348d8705-6b85-b405-0147-2d6cf1aba782/AppIcon-0-0-1x_U007epad-0-1-85-220.png/128x128bb.jpg"
+                alt="RouteX" class="app-icon" />
+            <div class="app-info">
+                <h3 class="app-title" data-en="RouteX" data-zh="RouteX">RouteX</h3>
+                <p class="app-description" data-en="Automatically record position and light chasing moments."
+                    data-zh="自动记录位置，捕捉每一个追光时刻。">自动记录位置，捕捉每一个追光时刻。</p>
+            </div>
+        </a>
+
+        <!-- Guozaoke -->
+        <a class="app-item" href="https://apps.apple.com/app/id6740704728" target="_blank">
+            <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/52/62/47/52624796-b9c3-3490-55e1-01c8303d83d8/AppIcon-0-0-1x_U007epad-0-1-85-220.png/128x128bb.jpg"
+                alt="Guozaoke" class="app-icon" />
+            <div class="app-info">
+                <h3 class="app-title" data-en="Guozaoke" data-zh="过早客">过早客</h3>
+                <p class="app-description" data-en="Wuhan's premium community for high-end sharing."
+                    data-zh="源自武汉的高端交流分享社区。">源自武汉的高端交流分享社区。</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- 底部 -->
+    <footer>
+        <!-- 左边 Hello World -->
+        <div class="footer-left">Hello World</div>
+
+        <!-- 右边图标 -->
+        <div class="footer-right">
+            <!-- GitHub -->
+            <a href="https://github.com/sauteam" target="_blank" title="GitHub">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                </svg>
             </a>
 
-            <a href="https://apps.apple.com/app/id6740704728" class="app-item" target="_blank">
-                <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/6c/68/74/6c68744b-4835-9615-5645-842215c54c35/AppIcon-0-0-1x_U007emarketing-0-10-0-85-220.png/256x256bb.png" class="app-icon" alt="Guozaoke">
-                <div class="app-title" data-en="Guozaoke" data-zh="过早客">Guozaoke</div>
-                <div class="app-description" 
-                     data-en="Wuhan's premium community for high-end sharing." 
-                     data-zh="源自武汉的高端交流分享社区。">
-                     Wuhan's premium community for high-end sharing.
-                </div>
-                <img src="https://linkmaker.itunes.apple.com/assets/shared/images/web/download_appstore.svg" class="app-store-badge" alt="Download">
+            <!-- X (Twitter) -->
+            <a href="https://x.com/yyscycy" target="_blank" title="X">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+                </svg>
+            </a>
+
+            <!-- Email -->
+            <a href="mailto:2681446317@qq.com" title="Email">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                </svg>
+            </a>
+
+            <!-- Support/Feedback (Info icon) -->
+            <a href="https://github.com/sauteam/App/blob/main/support/support.md" target="_blank" title="Feedback">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                </svg>
+            </a>
+
+            <!-- Share -->
+            <a href="https://twitter.com/intent/tweet?text=Check out these amazing apps from sauteam!&url=https://sauteam.github.io"
+                target="_blank" title="Share">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z" />
+                </svg>
             </a>
         </div>
-
-        <footer>
-            <div style="margin-bottom: 10px;">
-                <a href="https://github.com/sauchye" target="_blank">GitHub</a>
-                <a href="https://x.com/yyscycy" target="_blank">X</a>
-                <a href="https://github.com/sauteam/App/tree/main/support" target="_blank">Support</a>
-            </div>
-            <p>&copy; 2026 sauteam</p>
-            <a href="https://twitter.com/intent/tweet?text=Check out these amazing apps from sauteam!&url=https://sauteam.github.io" class="share-x" target="_blank">Share to X</a>
-        </footer>
-    </div>
+    </footer>
 
     <script>
+        // 主题切换
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+
+            if (isDark) {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            document.getElementById('icon-sun').style.display = isDark ? 'none' : 'block';
+            document.getElementById('icon-moon').style.display = isDark ? 'block' : 'none';
+        }
+
+        // 语言切换
         function switchLang(lang) {
-            // 更新按钮样式
             document.getElementById('btn-en').classList.toggle('active', lang === 'en');
             document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
 
-            // 切换所有带有 data 属性的文本
             document.querySelectorAll('[data-en]').forEach(el => {
-                el.innerText = el.getAttribute('data-' + lang);
+                el.textContent = el.getAttribute('data-' + lang);
             });
+
+            localStorage.setItem('preferred-lang', lang);
         }
+
+        // 检测浏览器/系统语言
+        function detectLanguage() {
+            const savedLang = localStorage.getItem('preferred-lang');
+            if (savedLang) {
+                return savedLang;
+            }
+
+            const browserLang = navigator.language || navigator.userLanguage;
+            return browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            // 初始化主题 (默认亮色)
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+            }
+            updateThemeIcon();
+
+            // 初始化语言 (根据浏览器/系统自动检测)
+            const detectedLang = detectLanguage();
+            switchLang(detectedLang);
+        });
     </script>
 </body>
-</html>
 
+</html>
