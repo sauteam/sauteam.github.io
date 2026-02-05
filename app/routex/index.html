@@ -3,415 +3,297 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RouteX - 一款为摄影师、户外爱好者量身打造的追光与轨迹记录助手">
-    <meta name="keywords" content="RouteX, 追光, 轨迹记录, 日出日落, GPS, iPhone, App">
-    <title>RouteX - 轨迹记录追光时刻回忆 | sauteam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>RouteX - 轨迹记录·追光时刻·回忆 | sauteam</title>
+    <meta name="description" content="RouteX - 用轨迹记录生活，追寻光影时刻，珍藏美好回忆">
     <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
     <style>
         :root {
-            --bg-color: #fafafa;
-            --card-bg: #ffffff;
+            --bg-color: #ffffff;
             --text-color: #1d1d1f;
-            --secondary-text: rgba(0, 0, 0, 0.55);
-            --border-color: rgba(0, 0, 0, 0.08);
-            --accent-color: #007aff;
-            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --secondary-text: rgba(0, 0, 0, 0.45);
+            --border-color: #e0e0e0;
+            --link-accent: #007aff;
+            --icon-color: #1d1d1f;
         }
 
         [data-theme="dark"] {
-            --bg-color: #000000;
-            --card-bg: #1c1c1e;
+            --bg-color: #1d1d1f;
             --text-color: #f5f5f7;
-            --secondary-text: rgba(255, 255, 255, 0.55);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.4);
+            --secondary-text: rgba(255, 255, 255, 0.45);
+            --border-color: #333;
+            --icon-color: #f5f5f7;
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.5;
             -webkit-font-smoothing: antialiased;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* 优雅的顶部导航栏 */
-        .nav-bar {
+        /* 右上角控制栏 - 主题切换 + 语言切换 */
+        .top-controls {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 52px;
-            background: rgba(250, 250, 250, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 0.5px solid var(--border-color);
-            z-index: 1000;
+            top: 0.75rem;
+            right: 1rem;
+            z-index: 100;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 1rem;
+            gap: 0.4rem;
         }
 
-        [data-theme="dark"] .nav-bar {
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        /* 优雅的返回按钮 */
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.5rem 0.75rem;
-            color: var(--accent-color);
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 400;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .back-btn:hover {
-            background: rgba(0, 122, 255, 0.1);
-        }
-
-        .back-btn svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            stroke-width: 2.5;
-            fill: none;
-        }
-
-        .nav-title {
-            font-size: 15px;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .nav-title.visible {
-            opacity: 1;
-        }
-
-        /* 主题切换 */
         .theme-toggle {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1;
+            color: var(--icon-color);
+            transition: background-color 0.2s, transform 0.2s;
         }
 
         .theme-toggle:hover {
-            background: rgba(128, 128, 128, 0.1);
+            background-color: rgba(128, 128, 128, 0.12);
+            transform: scale(1.05);
         }
 
-        .theme-toggle svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--text-color);
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.15rem;
+            padding: 0.15rem;
+            background: rgba(128, 128, 128, 0.08);
+            border-radius: 6px;
         }
+
+        .lang-toggle button {
+            padding: 0.25rem 0.4rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--secondary-text);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .lang-toggle button:hover {
+            color: var(--text-color);
+        }
+
+        .lang-toggle button.active {
+            background: var(--bg-color);
+            color: var(--text-color);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+
+
 
         /* 主容器 */
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 72px 1.5rem 4rem;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px 24px;
+            text-align: center;
         }
 
-        /* App 头部区域 */
+        /* App Header */
         .app-header {
             display: flex;
-            align-items: flex-start;
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        @media (max-width: 600px) {
-            .app-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
         }
 
         .app-icon {
-            width: 128px;
-            height: 128px;
-            border-radius: 28px;
-            box-shadow: var(--shadow);
-            flex-shrink: 0;
-        }
-
-        .app-info {
-            flex: 1;
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
         }
 
         .app-name {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 0.25rem;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
         }
 
         .app-subtitle {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             color: var(--secondary-text);
-            margin-bottom: 1rem;
+            margin-bottom: 12px;
         }
 
-        .app-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1.25rem;
-            font-size: 0.85rem;
-            color: var(--secondary-text);
-        }
-
-        .app-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .app-meta-item svg {
-            width: 14px;
-            height: 14px;
-            fill: currentColor;
-            opacity: 0.7;
-        }
-
-        /* 下载按钮 */
+        /* Download Button */
         .download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: var(--accent-color);
-            color: #fff;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 24px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+            display: inline-block;
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
         .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+            transform: scale(1.05);
+            opacity: 0.9;
         }
 
-        .download-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
+        .download-btn img {
+            height: 36px;
         }
 
-        /* 描述区域 */
-        .section {
-            margin-bottom: 2.5rem;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            letter-spacing: -0.3px;
-        }
-
-        .description {
-            font-size: 1rem;
-            line-height: 1.75;
-            color: var(--secondary-text);
-        }
-
-        .description p {
-            margin-bottom: 1rem;
-        }
-
-        /* 特性网格 */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1rem;
-        }
-
-        .feature-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.25rem;
-            box-shadow: var(--shadow);
-            transition: all 0.25s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .feature-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 0.75rem;
-            font-size: 1.5rem;
-        }
-
-        .feature-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .feature-desc {
-            font-size: 0.85rem;
-            color: var(--secondary-text);
-            line-height: 1.5;
-        }
-
-        /* 信息卡片 */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-
-        .info-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .info-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .info-label {
-            font-size: 0.8rem;
-            color: var(--secondary-text);
-        }
-
-        /* 底部链接 */
-        .footer-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            justify-content: center;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.9rem;
-        }
-
-        .footer-links a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* 评分星星 */
-        .rating {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .stars {
-            color: #ffc107;
-            letter-spacing: 1px;
-        }
-
-        /* 截图展示 */
+        /* Screenshots Section */
         .screenshots-section {
-            margin-bottom: 2.5rem;
-        }
-
-        .screenshots-scroll {
             display: flex;
-            gap: 1rem;
-            overflow-x: auto;
-            padding: 1rem 0;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .screenshots-scroll::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .screenshots-scroll::-webkit-scrollbar-track {
-            background: var(--border-color);
-            border-radius: 3px;
-        }
-
-        .screenshots-scroll::-webkit-scrollbar-thumb {
-            background: var(--secondary-text);
-            border-radius: 3px;
+            justify-content: center;
+            gap: 16px;
+            margin: 24px 0;
+            flex-wrap: wrap;
         }
 
         .screenshot-item {
-            flex-shrink: 0;
-            width: 180px;
-            scroll-snap-align: start;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .screenshot-item:hover {
-            transform: scale(1.03);
-            box-shadow: var(--shadow-hover);
+        .screenshot-label {
+            margin-bottom: 8px;
         }
 
-        .screenshot-item img {
-            width: 100%;
-            height: auto;
-            display: block;
+        .screenshot-label h3 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 2px;
+        }
+
+        .screenshot-label p {
+            font-size: 0.7rem;
+            color: var(--secondary-text);
+        }
+
+        .screenshot-img {
+            height: calc(100vh - 340px);
+            max-height: 380px;
+            min-height: 200px;
+            width: auto;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0.75rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: var(--secondary-text);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer a:hover {
+            color: var(--link-accent);
+        }
+
+        .footer-divider {
+            color: var(--secondary-text);
+            opacity: 0.4;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .screenshot-img {
+                height: calc(100vh - 320px);
+                max-height: 320px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 48px 12px 20px;
+            }
+
+            .app-icon {
+                width: 56px;
+                height: 56px;
+                border-radius: 12px;
+            }
+
+            .app-name {
+                font-size: 1.25rem;
+            }
+
+            .screenshots-section {
+                gap: 8px;
+            }
+
+            .screenshot-img {
+                height: calc(100vh - 300px);
+                max-height: 280px;
+                min-height: 160px;
+                border-radius: 10px;
+            }
+
+            .screenshot-label h3 {
+                font-size: 0.7rem;
+            }
+
+            .screenshot-label p {
+                font-size: 0.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .screenshot-img {
+                height: calc(100vh - 280px);
+                max-height: 220px;
+                border-radius: 8px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- 顶部导航栏 -->
-    <nav class="nav-bar">
-        <a href="../../" class="back-btn">
-            <svg viewBox="0 0 24 24">
-                <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-            <span>sauteam</span>
-        </a>
 
-        <span class="nav-title" id="nav-title">RouteX</span>
 
-        <button class="theme-toggle" onclick="toggleTheme()">
-            <svg id="icon-sun" viewBox="0 0 24 24">
+    <!-- 右上角控制栏 -->
+    <div class="top-controls">
+        <!-- 主题切换 -->
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+            <svg id="icon-sun" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                 <line x1="12" y1="20" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -426,166 +308,89 @@
                 <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" />
             </svg>
-            <svg id="icon-moon" viewBox="0 0 24 24" style="display: none;">
+            <svg id="icon-moon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" style="display: none;">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
         </button>
-    </nav>
 
-    <div class="container">
-        <!-- App 头部 -->
-        <header class="app-header">
-            <img src="../../resources/routex-icon.png" alt="RouteX" class="app-icon">
-            <div class="app-info">
-                <h1 class="app-name">RouteX</h1>
-                <p class="app-subtitle">轨迹记录 · 追光时刻 · 回忆</p>
-
-                <div class="app-meta">
-                    <div class="app-meta-item rating">
-                        <span class="stars">★★★★★</span>
-                        <span>5.0 (9)</span>
-                    </div>
-                    <div class="app-meta-item">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                        </svg>
-                        <span>导航</span>
-                    </div>
-                    <div class="app-meta-item">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                        </svg>
-                        <span>5.8 MB</span>
-                    </div>
-                    <div class="app-meta-item">
-                        <span>v1.0.9</span>
-                    </div>
-                </div>
-
-                <a href="https://apps.apple.com/cn/app/routex-%E8%BD%A8%E8%BF%B9%E8%AE%B0%E5%BD%95%E8%BF%BD%E5%85%89%E6%97%B6%E5%88%BB%E5%9B%9E%E5%BF%86/id6753095851"
-                    class="download-btn" target="_blank">
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="M16.018 3.815L15.232 8h-4.966l.716-3.815a.75.75 0 00-1.474-.276L8.689 8H3.75a.75.75 0 000 1.5h4.576l-.94 5H2.75a.75.75 0 000 1.5h4.274l-.716 3.815a.75.75 0 001.474.276l.779-4.091h4.966l-.716 3.815a.75.75 0 101.474.276l.779-4.091h4.936a.75.75 0 000-1.5h-4.574l.94-5h4.634a.75.75 0 000-1.5h-4.272l.716-3.815a.75.75 0 00-1.474-.276l-.779 4.091zM8.025 14.5l.94-5h4.966l-.94 5z" />
-                    </svg>
-                    App Store 下载
-                </a>
-            </div>
-        </header>
-
-        <!-- 应用截图 -->
-        <section class="screenshots-section">
-            <h2 class="section-title">应用预览</h2>
-            <div class="screenshots-scroll">
-                <div class="screenshot-item">
-                    <img src="../../resources/routex/screen1.webp" alt="RouteX 截图 1" loading="lazy">
-                </div>
-                <div class="screenshot-item">
-                    <img src="../../resources/routex/screen2.webp" alt="RouteX 截图 2" loading="lazy">
-                </div>
-                <div class="screenshot-item">
-                    <img src="../../resources/routex/screen3.webp" alt="RouteX 截图 3" loading="lazy">
-                </div>
-                <div class="screenshot-item">
-                    <img src="../../resources/routex/screen4.webp" alt="RouteX 截图 4" loading="lazy">
-                </div>
-            </div>
-        </section>
-
-        <!-- 功能特性 -->
-        <section class="section">
-            <h2 class="section-title">核心功能</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon" style="background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);">🌅
-                    </div>
-                    <h3 class="feature-title">追光提醒</h3>
-                    <p class="feature-desc">精准掌握日出日落、黄金蓝调时刻，即时通知提醒</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📍
-                    </div>
-                    <h3 class="feature-title">轨迹记录</h3>
-                    <p class="feature-desc">自动记录位置轨迹，每一次旅程都值得回忆</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">🧭
-                    </div>
-                    <h3 class="feature-title">实时数据</h3>
-                    <p class="feature-desc">指南针、气压、海拔、含氧量，户外必备</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">📱
-                    </div>
-                    <h3 class="feature-title">桌面小组件</h3>
-                    <p class="feature-desc">多种尺寸小组件，随时掌握追光时刻</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 详细描述 -->
-        <section class="section">
-            <h2 class="section-title">关于 RouteX</h2>
-            <div class="description">
-                <p>RouteX 是一款为摄影师、户外爱好者、轨迹爱好者量身打造的「追光」以及「轨迹记录回忆」助手。</p>
-                <p>在这里，你可以精准掌握太阳日出日落、黄金蓝调时刻，以本地通知即时提醒，把握每一次光影变化。</p>
-                <p>指南针与位置实时数据、实时气压、含氧量、海拔以及三种地图模式方便切换，随时校准方向、记录轨迹，美好值得记录与回忆。</p>
-                <p>支持手动添加位置信息、添加当时心情以及图片，每次记录都回忆满满。</p>
-                <p>每日激励提醒、周回顾、月回顾，极简设计，小巧无广告，各种个性化设置。</p>
-            </div>
-        </section>
-
-        <!-- 应用信息 -->
-        <section class="section">
-            <h2 class="section-title">应用信息</h2>
-            <div class="info-grid">
-                <div class="info-card">
-                    <div class="info-value">免费</div>
-                    <div class="info-label">价格</div>
-                </div>
-                <div class="info-card">
-                    <div class="info-value">iOS 17+</div>
-                    <div class="info-label">系统要求</div>
-                </div>
-                <div class="info-card">
-                    <div class="info-value">17+</div>
-                    <div class="info-label">年龄分级</div>
-                </div>
-                <div class="info-card">
-                    <div class="info-value">14</div>
-                    <div class="info-label">支持语言</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 底部链接 -->
-        <footer class="footer-links">
-            <a href="../../privacy/?page=routex">隐私政策</a>
-            <a href="../../support/">支持与反馈</a>
-            <a href="https://apps.apple.com/cn/app/routex-%E8%BD%A8%E8%BF%B9%E8%AE%B0%E5%BD%95%E8%BF%BD%E5%85%89%E6%97%B6%E5%88%BB%E5%9B%9E%E5%BF%86/id6753095851"
-                target="_blank">App Store</a>
-        </footer>
+        <!-- 语言切换 -->
+        <div class="lang-toggle">
+            <button id="btn-zh" class="active" onclick="switchLang('zh')">中</button>
+            <button id="btn-en" onclick="switchLang('en')">EN</button>
+        </div>
     </div>
 
-    <script>
-        // 滚动时显示标题
-        window.addEventListener('scroll', function () {
-            const navTitle = document.getElementById('nav-title');
-            if (window.scrollY > 100) {
-                navTitle.classList.add('visible');
-            } else {
-                navTitle.classList.remove('visible');
-            }
-        });
+    <div class="container">
+        <!-- App Header -->
+        <header class="app-header">
+            <img src="../../resources/routex-icon.png" alt="RouteX Icon" class="app-icon">
+            <h1 class="app-name">RouteX</h1>
+            <p class="app-subtitle" data-en="Track Routes · Chase Light · Memories" data-zh="轨迹记录 · 追光时刻 · 回忆">轨迹记录 ·
+                追光时刻 · 回忆</p>
+            <a href="https://apps.apple.com/app/id6753095851" target="_blank" class="download-btn">
+                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                    alt="Download on the App Store">
+            </a>
+        </header>
 
+        <!-- Screenshots -->
+        <section class="screenshots-section">
+            <div class="screenshot-item">
+                <div class="screenshot-label">
+                    <h3 data-en="Golden Hour" data-zh="追光时刻">追光时刻</h3>
+                    <p data-en="Sunrise · Sunset" data-zh="日出日落 · 黄金时刻">日出日落 · 黄金时刻</p>
+                </div>
+                <img src="../../resources/routex/screen1.webp" alt="追光时刻" class="screenshot-img">
+            </div>
+            <div class="screenshot-item">
+                <div class="screenshot-label">
+                    <h3 data-en="Global Footprint" data-zh="全球足迹">全球足迹</h3>
+                    <p data-en="Track Every Step" data-zh="记录您的每一步">记录您的每一步</p>
+                </div>
+                <img src="../../resources/routex/screen2.webp" alt="全球足迹" class="screenshot-img">
+            </div>
+            <div class="screenshot-item">
+                <div class="screenshot-label">
+                    <h3 data-en="Route History" data-zh="轨迹回溯">轨迹回溯</h3>
+                    <p data-en="Relive Your Journey" data-zh="重温精彩旅程">重温精彩旅程</p>
+                </div>
+                <img src="../../resources/routex/screen3.webp" alt="轨迹回溯" class="screenshot-img">
+            </div>
+            <div class="screenshot-item">
+                <div class="screenshot-label">
+                    <h3 data-en="Map Explorer" data-zh="地图探索">地图探索</h3>
+                    <p data-en="Discover Nearby" data-zh="发现周边精彩">发现周边精彩</p>
+                </div>
+                <img src="../../resources/routex/screen4.webp" alt="地图探索" class="screenshot-img">
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <a href="../../privacy/index.html?page=routex" data-en="Privacy" data-zh="隐私政策">隐私政策</a>
+        <span class="footer-divider">|</span>
+        <a href="../../support/index.html" data-en="Support" data-zh="支持">支持</a>
+        <span class="footer-divider">|</span>
+        <a href="mailto:2681446317@qq.com" data-en="Feedback" data-zh="反馈">反馈</a>
+        <span class="footer-divider">|</span>
+        <a href="../../index.html" data-en="More" data-zh="更多">更多</a>
+        <span class="footer-divider">|</span>
+        <a href="https://twitter.com/intent/tweet?text=RouteX%20-%20Track%20Routes%20%C2%B7%20Chase%20Light%20%C2%B7%20Memories&url=https://apps.apple.com/app/id6753095851"
+            target="_blank" data-en="Share" data-zh="分享">分享</a>
+    </footer>
+
+    <script>
         // 主题切换
         function toggleTheme() {
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+
             if (isDark) {
-                document.body.removeAttribute('data-theme');
+                body.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
             } else {
-                document.body.setAttribute('data-theme', 'dark');
+                body.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
             }
             updateThemeIcon();
@@ -597,12 +402,42 @@
             document.getElementById('icon-moon').style.display = isDark ? 'block' : 'none';
         }
 
-        // 初始化
+        // 语言切换
+        function switchLang(lang) {
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.textContent = el.getAttribute('data-' + lang);
+            });
+
+            localStorage.setItem('preferred-lang', lang);
+        }
+
+        // 检测浏览器/系统语言
+        function detectLanguage() {
+            const savedLang = localStorage.getItem('preferred-lang');
+            if (savedLang) {
+                return savedLang;
+            }
+
+            const browserLang = navigator.language || navigator.userLanguage;
+            return browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+        }
+
+        // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function () {
-            if (localStorage.getItem('theme') === 'dark') {
+            // 初始化主题 (默认亮色)
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
             }
             updateThemeIcon();
+
+            // 初始化语言 (根据浏览器/系统自动检测)
+            const detectedLang = detectLanguage();
+            switchLang(detectedLang);
         });
     </script>
 </body>
