@@ -4,7 +4,7 @@ Thank you for using our applications. We are committed to providing a high-quali
 
 ------
 
-### #Contact Us
+### Contact Us
 
 If you experience any technical issues, crashes, or have suggestions for new features, please reach out through the following channels:
 
