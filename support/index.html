@@ -45,31 +45,23 @@
             padding: 2rem 1.5rem;
         }
 
-        /* 优雅的返回按钮 */
-        .back-link {
+        /* 更多链接 */
+        .more-link {
             display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
-            color: var(--link-color);
+            color: var(--text-color);
             text-decoration: none;
-            font-size: 15px;
-            font-weight: 400;
+            font-size: 14px;
+            font-weight: 500;
             padding: 0.5rem 0.75rem;
             margin: -0.5rem -0.75rem 1rem;
             border-radius: 8px;
             transition: all 0.2s ease;
         }
 
-        .back-link:hover {
-            background: rgba(0, 122, 255, 0.1);
-        }
-
-        .back-link svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            stroke-width: 2.5;
-            fill: none;
+        .more-link:hover {
+            background: rgba(128, 128, 128, 0.1);
+            color: var(--text-color);
         }
 
         /* Markdown 内容样式 */
@@ -103,6 +95,16 @@
         }
 
         .markdown-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* 邮箱链接使用普通文字颜色 */
+        .markdown-content a[href^="mailto:"] {
+            color: var(--text-color);
+        }
+
+        .markdown-content a[href^="mailto:"]:hover {
+            color: var(--text-color);
             text-decoration: underline;
         }
 
@@ -205,13 +207,8 @@
     </button>
 
     <div class="container">
-        <!-- 返回首页 -->
-        <a href="../" class="back-link">
-            <svg viewBox="0 0 24 24">
-                <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-            sauteam
-        </a>
+        <!-- 更多 -->
+        <a href="../" class="more-link">···</a>
 
         <!-- Markdown 内容 -->
         <div id="markdown-content" class="markdown-content">

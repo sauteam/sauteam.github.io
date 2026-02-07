@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>RouteX - 轨迹记录·追光时刻·回忆 | sauteam</title>
+    <title>RouteX - 轨迹记录·追光时刻·回忆</title>
     <meta name="description" content="RouteX - 用轨迹记录生活，追寻光影时刻，珍藏美好回忆">
     <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
     <style>
@@ -171,13 +171,25 @@
             justify-content: center;
             gap: 16px;
             margin: 24px 0;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
+        }
+
+        .screenshots-section::-webkit-scrollbar {
+            display: none;
+            /* Chrome/Safari */
         }
 
         .screenshot-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .screenshot-label {
@@ -257,7 +269,9 @@
             }
 
             .screenshots-section {
-                gap: 8px;
+                gap: 12px;
+                justify-content: flex-start;
+                padding: 0 12px;
             }
 
             .screenshot-img {
@@ -277,6 +291,10 @@
         }
 
         @media (max-width: 480px) {
+            .screenshots-section {
+                gap: 10px;
+            }
+
             .screenshot-img {
                 height: calc(100vh - 280px);
                 max-height: 220px;
